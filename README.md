@@ -16,6 +16,7 @@ Built for **Wellness Hackathon 2026** · ALX Africa · Addis Ababa, Ethiopia
 Empowered Care is a full-stack health platform designed for Ethiopian wellness contexts. It ingests signals from Apple Health, Google Health Connect, and WeVa Sphere, runs them through a mobile ETL pipeline, and surfaces clinical-grade FHIR observations — all while keeping the user at the center of a federated, privacy-respecting data model.
 
 **Live API docs:** [https://alx-8xu3.onrender.com/docs](https://alx-8xu3.onrender.com/docs)
+**Live FrontEnd :**  https://alx-1-b8sz.onrender.com/
 
 ---
 
