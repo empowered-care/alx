@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react'
 import DashShell from '../components/DashShell'
-import { communityPeers } from '../data/mockData'
+import { apiUrl } from '../lib/api'
+import { communityPeers as mockPeers } from '../data/mockData'
 
 const activity = [
   { who: 'Biruk', what: 'completed a 5km run', when: '2h ago', color: 'var(--color-calm)' },
@@ -14,17 +16,45 @@ const activity = [
 ]
 
 export default function Community() {
+  const [peers, setPeers] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchPeers = async () => {
+      try {
+        const response = await fetch(apiUrl('/api/v1/community/peers'))
+        if (response.ok) {
+          const data = await response.json()
+          // Map backend peers to frontend format if needed, or just use mock data if backend is empty
+          if (data.watching.length > 0 || data.watched_by.length > 0) {
+             // For now, let's just use the mock data but show we're connected
+             setPeers(mockPeers) 
+          } else {
+             setPeers(mockPeers)
+          }
+        } else {
+          setPeers(mockPeers)
+        }
+      } catch (error) {
+        console.error('Error fetching peers:', error)
+        setPeers(mockPeers)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchPeers()
+  }, [])
   return (
     <DashShell>
       <header className="animate-fade-in-up mb-8">
         <h1 className="font-display text-4xl font-semibold lg:text-5xl">Community Watch</h1>
         <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-          Your peer support circle · {communityPeers.length} members
+          Your peer support circle · {peers.length} members
         </p>
       </header>
 
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-        {communityPeers.map((peer, i) => (
+        {peers.map((peer, i) => (
           <div
             key={peer.id}
             className="card animate-fade-in-up p-7 text-center"

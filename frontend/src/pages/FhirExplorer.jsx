@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import DashShell from '../components/DashShell'
+import { apiUrl, API_BASE_URL } from '../lib/api'
 import { fhirMetricOptions } from '../data/mockData'
 
 function buildObservation(metric, value, patientId, dateTime) {
@@ -106,13 +107,38 @@ export default function FhirExplorer() {
     [metric, value, patientId, dateTime],
   )
 
-  const handlePush = () => {
+  const handlePush = async () => {
     setPushing(true)
     setSuccess(false)
-    setTimeout(() => {
-      setPushing(false)
+    try {
+      const response = await fetch(apiUrl('/api/v1/fhir/observation'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          metric_key: metric.key,
+          value: Number(value),
+          patient_id: patientId,
+          date_time: new Date(dateTime).toISOString(),
+          loinc: metric.loinc,
+          unit: metric.unit,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to push to WeVa Sphere')
+      }
+
+      const data = await response.json()
+      console.log('FHIR Response:', data)
       setSuccess(true)
-    }, 1500)
+    } catch (error) {
+      console.error('Error pushing to FHIR endpoint:', error)
+      alert(`Failed to connect to the backend. Please ensure the API is reachable at ${API_BASE_URL}`)
+    } finally {
+      setPushing(false)
+    }
   }
 
   return (
