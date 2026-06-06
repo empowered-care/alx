@@ -155,9 +155,9 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 API available at:
-- **Root:** http://localhost:8000
-- **Swagger UI:** http://localhost:8000/docs
-- **ReDoc:** http://localhost:8000/redoc
+- **Root:** https://alx-8xu3.onrender.com
+- **Swagger UI:** https://alx-8xu3.onrender.com/docs
+- **ReDoc:** https://alx-8xu3.onrender.com/redoc
 
 ### 3. Frontend
 
@@ -169,7 +169,7 @@ npm install
 For local backend, create or edit `frontend/.env`:
 
 ```env
-VITE_API_BASE_URL=http://localhost:8000
+VITE_API_BASE_URL=hhttps://alx-8xu3.onrender.com
 ```
 
 Start the dev server:
