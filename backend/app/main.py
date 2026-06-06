@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from sqlmodel import SQLModel
+from sqlmodel import SQLModel, Session, select
 
 from app.api.v1.api import api_router
 from app.core.config import settings
