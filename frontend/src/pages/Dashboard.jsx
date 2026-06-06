@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Area,
@@ -59,8 +60,36 @@ function NervousSystemChart() {
 }
 
 export default function Dashboard() {
+  const [dashboardData, setDashboardData] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/v1/health/dashboard')
+        if (response.ok) {
+          const data = await response.json()
+          setDashboardData(data)
+        }
+      } catch (error) {
+        console.error('Error fetching dashboard:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchDashboard()
+  }, [])
+
   const today = 'Friday · June 6, 2026'
   const glPercent = Math.min((nutritionSummary.glycemicLoad / 40) * 100, 100)
+
+  const displayBiometrics = dashboardData ? {
+    ...biometrics,
+    heartRate: { ...biometrics.heartRate, value: dashboardData.latest_heart_rate },
+    hrv: { ...biometrics.hrv, value: dashboardData.latest_hrv },
+    sleep: { ...biometrics.sleep, value: dashboardData.sleep_score / 10 }, // Assuming sleep score / 10 = hours for mock consistency
+    steps: { ...biometrics.steps, value: dashboardData.daily_steps },
+  } : biometrics
 
   return (
     <DashShell>
@@ -92,7 +121,7 @@ export default function Dashboard() {
               </span>
             </div>
             <div className="grid grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-4">
-              {Object.entries(biometrics).map(([key, metric]) => (
+              {Object.entries(displayBiometrics).map(([key, metric]) => (
                 <div key={key}>
                   <ProgressRing
                     percent={metric.percent}

@@ -106,13 +106,38 @@ export default function FhirExplorer() {
     [metric, value, patientId, dateTime],
   )
 
-  const handlePush = () => {
+  const handlePush = async () => {
     setPushing(true)
     setSuccess(false)
-    setTimeout(() => {
-      setPushing(false)
+    try {
+      const response = await fetch('http://localhost:8000/api/v1/fhir/observation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          metric_key: metric.key,
+          value: Number(value),
+          patient_id: patientId,
+          date_time: new Date(dateTime).toISOString(),
+          loinc: metric.loinc,
+          unit: metric.unit,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to push to WeVa Sphere')
+      }
+
+      const data = await response.json()
+      console.log('FHIR Response:', data)
       setSuccess(true)
-    }, 1500)
+    } catch (error) {
+      console.error('Error pushing to FHIR endpoint:', error)
+      alert('Failed to connect to the backend. Please ensure the backend is running on http://localhost:8000')
+    } finally {
+      setPushing(false)
+    }
   }
 
   return (
