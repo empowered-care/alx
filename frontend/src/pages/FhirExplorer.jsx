@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import DashShell from '../components/DashShell'
+import { apiUrl, API_BASE_URL } from '../lib/api'
 import { fhirMetricOptions } from '../data/mockData'
 
 function buildObservation(metric, value, patientId, dateTime) {
@@ -110,7 +111,7 @@ export default function FhirExplorer() {
     setPushing(true)
     setSuccess(false)
     try {
-      const response = await fetch('http://localhost:8000/api/v1/fhir/observation', {
+      const response = await fetch(apiUrl('/api/v1/fhir/observation'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -134,7 +135,7 @@ export default function FhirExplorer() {
       setSuccess(true)
     } catch (error) {
       console.error('Error pushing to FHIR endpoint:', error)
-      alert('Failed to connect to the backend. Please ensure the backend is running on http://localhost:8000')
+      alert(`Failed to connect to the backend. Please ensure the API is reachable at ${API_BASE_URL}`)
     } finally {
       setPushing(false)
     }

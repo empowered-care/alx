@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import DashShell from '../components/DashShell'
+import { apiUrl } from '../lib/api'
 import { communityPeers as mockPeers } from '../data/mockData'
 
 const activity = [
@@ -21,7 +22,7 @@ export default function Community() {
   useEffect(() => {
     const fetchPeers = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/v1/community/peers')
+        const response = await fetch(apiUrl('/api/v1/community/peers'))
         if (response.ok) {
           const data = await response.json()
           // Map backend peers to frontend format if needed, or just use mock data if backend is empty

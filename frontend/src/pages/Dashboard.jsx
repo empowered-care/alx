@@ -8,6 +8,7 @@ import {
   XAxis,
 } from 'recharts'
 import DashShell from '../components/DashShell'
+import { apiUrl } from '../lib/api'
 import ProgressRing from '../components/ProgressRing'
 import Sparkline from '../components/Sparkline'
 import {
@@ -66,7 +67,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/v1/health/dashboard')
+        const response = await fetch(apiUrl('/api/v1/health/dashboard'))
         if (response.ok) {
           const data = await response.json()
           setDashboardData(data)
